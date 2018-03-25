@@ -160,7 +160,7 @@ public class HorizontalFloatingHeaderLayout: UICollectionViewLayout {
             return CGSize.zero
         }
         
-        func lastItemMaxX() ->CGFloat{
+        func lastItemMaxX() -> CGFloat {
             let lastSection = collectionView.numberOfSections - 1
             let lastIndexInSection = collectionView.numberOfItems(inSection: lastSection) - 1
             if let lastItemAttributes = layoutAttributesForItem(at: IndexPath(row: lastIndexInSection, section: lastSection)) {
@@ -237,10 +237,7 @@ public class HorizontalFloatingHeaderLayout: UICollectionViewLayout {
             
             //
             let attribute = UICollectionViewLayoutAttributes(forSupplementaryViewOfKind: UICollectionElementKindSectionHeader, with: indexPath)
-            let myPosition = position()
-            let mySize = size()
-            let frame = CGRect(x: myPosition.x, y: myPosition.y, width: mySize.width, height: mySize.height)
-            attribute.frame = frame
+            attribute.frame = CGRect(origin: position(), size: size())
             
             return attribute
             
@@ -275,8 +272,8 @@ public class HorizontalFloatingHeaderLayout: UICollectionViewLayout {
     public override func invalidationContext(forBoundsChange newBounds: CGRect) -> UICollectionViewLayoutInvalidationContext {
         
         func isSizeChanged() -> Bool {
-            let oldBounds = collectionView!.bounds
-            return oldBounds.width != newBounds.width || oldBounds.height != newBounds.height
+            let oldBounds = collectionView?.bounds ?? .zero
+            return oldBounds.size != newBounds.size
         }
         
         func headersIndexPaths() -> [IndexPath] {
@@ -346,20 +343,15 @@ public class HorizontalFloatingHeaderLayout: UICollectionViewLayout {
         return delegate.collectionView?(collectionView, horizontalFloatingHeaderItemSpacingForSectionAt: section) ?? defaultValue
     }
     
-    private func availableHeight(atSection section:Int ) ->CGFloat {
-        guard let collectionView = collectionView else {
-            return 0.0
-        }
+    private func availableHeight(atSection section: Int) -> CGFloat {
+        
+        // Ensure we have a collection view and the section is positive
+        guard let collectionView = collectionView, section >= 0 else { return 0.0 }
         
         func totalInset() -> CGFloat {
             let sectionInset = inset(ForSection: section)
             let contentInset = collectionView.contentInset
             return sectionInset.top + sectionInset.bottom + contentInset.top + contentInset.bottom
-        }
-        
-        //
-        guard section >= 0 else {
-            return 0.0
         }
         
         return collectionView.bounds.height - totalInset()
