@@ -183,8 +183,7 @@ public class HorizontalFloatingHeaderLayout: UICollectionViewLayout {
     // MARK: For ItemAtIndexPath
     
     public override func layoutAttributesForItem(at indexPath: IndexPath) -> UICollectionViewLayoutAttributes? {
-        let fromIndexPath = IndexPath(row: indexPath.row, section: indexPath.section)
-        return itemAttributes[fromIndexPath]
+        return itemAttributes[indexPath]
     }
     
     
@@ -194,8 +193,7 @@ public class HorizontalFloatingHeaderLayout: UICollectionViewLayout {
         
         switch elementKind {
         case UICollectionElementKindSectionHeader:
-            let fromIndexPath = IndexPath(row: indexPath.row, section: indexPath.section)
-            return sectionHeadersAttributes[fromIndexPath]
+            return sectionHeadersAttributes[indexPath]
         default:
             return nil
         }
