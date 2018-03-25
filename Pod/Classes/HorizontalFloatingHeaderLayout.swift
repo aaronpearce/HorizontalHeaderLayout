@@ -146,9 +146,10 @@ public class HorizontalFloatingHeaderLayout: UICollectionViewLayout {
     
     override public func layoutAttributesForElements(in rect: CGRect) -> [UICollectionViewLayoutAttributes]? {
         
-        // Get the item attributes within the rect
-        let itemsA = itemAttributes.values.filter { rect.intersects($0.frame) }
-        let headersA = sectionHeadersAttributes.values.map { $0 }
+        // Get the item & section attributes within the rect
+        let attributesAreWithinRect = { (attributes: UICollectionViewLayoutAttributes) in attributes.frame.intersects(rect) }
+        let itemsA = itemAttributes.values.filter(attributesAreWithinRect)
+        let headersA = sectionHeadersAttributes.values.filter(attributesAreWithinRect)
         return itemsA + headersA
     }
     
