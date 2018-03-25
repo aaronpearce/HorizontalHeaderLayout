@@ -11,7 +11,7 @@ import UIKit
 @objc public protocol HorizontalFloatingHeaderLayoutDelegate: class {
     
     // Item size
-    func collectionView(_ collectionView: UICollectionView, horizontalFloatingHeaderItemSizeAt indexPath:IndexPath) -> CGSize
+    func collectionView(_ collectionView: UICollectionView, horizontalFloatingHeaderItemSizeAt indexPath: IndexPath) -> CGSize
     
     // Header size
     func collectionView(_ collectionView: UICollectionView, horizontalFloatingHeaderSizeAt section: Int) -> CGSize
@@ -23,7 +23,7 @@ import UIKit
     @objc optional func collectionView(_ collectionView: UICollectionView, horizontalFloatingHeaderItemSpacingForSectionAt section: Int) -> CGFloat
     
     // Line Spacing
-    @objc optional func collectionView(_ collectionView: UICollectionView,horizontalFloatingHeaderColumnSpacingForSectionAt section: Int) -> CGFloat
+    @objc optional func collectionView(_ collectionView: UICollectionView, horizontalFloatingHeaderColumnSpacingForSectionAt section: Int) -> CGFloat
     
 }
 
@@ -47,12 +47,7 @@ public class HorizontalFloatingHeaderLayout: UICollectionViewLayout {
     // MARK: Items properties
     
     // Variables
-    private var itemsAttributes = [IndexPath : UICollectionViewLayoutAttributes]()
-    
-    // PrepareItemsAtributes only
-    private var currentMinX: CGFloat = 0
-    private var currentMinY: CGFloat = 0
-    private var currentMaxX: CGFloat = 0
+    private var itemAttributes = [IndexPath : UICollectionViewLayoutAttributes]()
     
     
     // MARK: - PrepareForLayout methods
@@ -64,13 +59,24 @@ public class HorizontalFloatingHeaderLayout: UICollectionViewLayout {
     // Items
     private func prepareItemsAttributes() {
         
-        func resetAttributes() {
-            itemsAttributes.removeAll()
-            currentMinX = 0
-            currentMaxX = 0
-            currentMinY = 0
-        }
+        // Ensure we have a collection view else we have nothing to do
+        guard let collectionView = self.collectionView else { return }
         
+        // Remove all current item attributes
+        itemAttributes.removeAll()
+        
+        // Get the number of sections we'll be displaying
+        let sectionCount = collectionView.numberOfSections
+        
+        // Ensure we have at least one section to prepare items for
+        guard sectionCount > 0 else { return }
+        
+        // Set up values to keep track of
+        var currentMinX: CGFloat = 0
+        var currentMinY: CGFloat = 0
+        var currentMaxX: CGFloat = 0
+        
+        // Work for configuring the values for each section
         func configureVariables(forSection section: Int) {
             let sectionInset = inset(ForSection: section)
             let lastSectionInset = inset(ForSection: section - 1)
@@ -79,6 +85,7 @@ public class HorizontalFloatingHeaderLayout: UICollectionViewLayout {
             currentMaxX = 0.0
         }
         
+        // Work for creating the attributes for each item
         func itemAttribute(at indexPath: IndexPath) -> UICollectionViewLayoutAttributes {
             
             // Applying corrected layout
@@ -118,32 +125,24 @@ public class HorizontalFloatingHeaderLayout: UICollectionViewLayout {
             return attribute
         }
         
-        //
-        guard let collectionView = collectionView else {
-            return
-        }
-        
-        resetAttributes()
-        let sectionCount = collectionView.numberOfSections
-        guard sectionCount > 0 else {
-            return
-        }
-        
+        // Create the attributes for the items in each section
         for section in 0..<sectionCount {
             
             configureVariables(forSection: section)
             let itemCount = collectionView.numberOfItems(inSection: section)
-            guard itemCount > 0 else {
-                continue
-            }
             
+            // We're done if there's no items for this section
+            guard itemCount > 0 else { continue }
+            
+            // Create the attributes for each item
             for index in 0..<itemCount {
                 let indexPath = IndexPath(row: index, section: section)
                 let attribute = itemAttribute(at: indexPath)
-                itemsAttributes[indexPath] = attribute
+                itemAttributes[indexPath] = attribute
             }
             
         }
+        
     }
     
     
@@ -163,7 +162,7 @@ public class HorizontalFloatingHeaderLayout: UICollectionViewLayout {
         }
         
         //
-        let itemsA = attributes(itemsAttributes, containedIn: rect)
+        let itemsA = attributes(itemAttributes, containedIn: rect)
         let headersA = Array(sectionHeadersAttributes.values)
         return itemsA + headersA
     }
@@ -200,7 +199,7 @@ public class HorizontalFloatingHeaderLayout: UICollectionViewLayout {
     
     public override func layoutAttributesForItem(at indexPath: IndexPath) -> UICollectionViewLayoutAttributes? {
         let fromIndexPath = IndexPath(row: indexPath.row, section: indexPath.section)
-        return itemsAttributes[fromIndexPath]
+        return itemAttributes[fromIndexPath]
     }
     
     
