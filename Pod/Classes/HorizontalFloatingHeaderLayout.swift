@@ -90,17 +90,13 @@ public class HorizontalFloatingHeaderLayout: UICollectionViewLayout {
             
             // Applying corrected layout
             func newLineOrigin(size: CGSize) -> CGPoint {
-                var origin = CGPoint.zero
-                origin.x = currentMaxX + columnSpacing(forSection: indexPath.section)
-                origin.y = inset(ForSection: indexPath.section).top + headerSize(forSection: indexPath.section).height
-                return origin
+                let x = currentMaxX + columnSpacing(forSection: indexPath.section)
+                let y = inset(ForSection: indexPath.section).top + headerSize(forSection: indexPath.section).height
+                return CGPoint(x: x, y: y)
             }
             
             func sameLineOrigin(size: CGSize) -> CGPoint {
-                var origin = CGPoint.zero
-                origin.x = currentMinX
-                origin.y = currentMinY
-                return origin
+                return CGPoint(x: currentMinX, y: currentMinY)
             }
             
             func updateVariables(itemFrame frame: CGRect) {
@@ -118,7 +114,7 @@ public class HorizontalFloatingHeaderLayout: UICollectionViewLayout {
             } else {
                 origin = sameLineOrigin(size: size)
             }
-            let frame = CGRect(x: origin.x, y: origin.y, width: size.width, height: size.height)
+            let frame = CGRect(origin: origin, size: size)
             let attribute = UICollectionViewLayoutAttributes(forCellWith: indexPath)
             attribute.frame = frame
             updateVariables(itemFrame: frame)
