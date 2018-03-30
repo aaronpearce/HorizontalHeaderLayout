@@ -107,9 +107,10 @@ public class HorizontalFloatingHeaderLayout: UICollectionViewLayout {
             
             //
             let size = itemSize(for: indexPath)
+            let yFloatTolerance: CGFloat = 0.0001 // Float tolerance due to comparing equality of floats in relation to what will actually be displaid
             let newMaxY = currentMinY + size.height
             let origin: CGPoint
-            if newMaxY > availableHeight(atSection: indexPath.section) {
+            if (newMaxY - yFloatTolerance) > availableHeight(atSection: indexPath.section) {
                 origin = newLineOrigin(size: size)
             } else {
                 origin = sameLineOrigin(size: size)
