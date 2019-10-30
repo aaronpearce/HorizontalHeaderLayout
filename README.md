@@ -1,3 +1,5 @@
+# Doesn't float. Use the parent repo.
+
 # HorizontalFloatingHeaderLayout
 
 [![Version](https://img.shields.io/cocoapods/v/HorizontalFloatingHeaderLayout.svg?style=flat)](http://cocoapods.org/pods/HorizontalFloatingHeaderLayout)
