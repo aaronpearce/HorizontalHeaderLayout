@@ -224,12 +224,10 @@ public class HorizontalFloatingHeaderLayout: UICollectionViewLayout {
                     let firstItemAttributes = layoutAttributesForItem(at: indexPath),
                     let lastItemAttributes = layoutAttributesForItem(at: IndexPath(row: itemsCount - 1, section: indexPath.section)) {
                     let safeAreaInsets: UIEdgeInsets = { if #available(iOS 11.0, *) { return collectionView!.safeAreaInsets } else { return .zero } }()
-                    let edgeX = collectionView!.contentOffset.x + collectionView!.contentInset.left + safeAreaInsets.left
-                    let xByLeftBoundary = max(edgeX, firstItemAttributes.frame.minX)
+                    let xByLeftBoundary = firstItemAttributes.frame.minX
                     //
                     let width = size().width
-                    let xByRightBoundary = lastItemAttributes.frame.maxX - width
-                    let x = min(xByLeftBoundary,xByRightBoundary)
+                    let x = xByLeftBoundary
                     return CGPoint(x: x, y: 0)
                 } else {
                     return CGPoint(x: inset(ForSection: indexPath.section).left, y: 0)
